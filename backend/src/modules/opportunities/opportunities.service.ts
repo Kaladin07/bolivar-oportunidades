@@ -70,6 +70,7 @@ export class OpportunitiesService {
       externalKey: { not: null },
       sourceName: { not: null },
       sourceUrl: { not: null },
+      sourceActive: true,
       lastSyncedAt: {
         gte: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000),
       },
@@ -108,6 +109,7 @@ export class OpportunitiesService {
         externalKey: { not: null },
         sourceName: { not: null },
         sourceUrl: { not: null },
+        sourceActive: true,
       },
       include: publicInclude,
     });
@@ -142,7 +144,12 @@ export class OpportunitiesService {
   }
 
   async create(providerId: string, dto: UpsertOpportunityDto) {
-    if (!dto.title?.trim() || !dto.description?.trim() || !dto.type || !dto.modality) {
+    if (
+      !dto.title?.trim() ||
+      !dto.description?.trim() ||
+      !dto.type ||
+      !dto.modality
+    ) {
       throw new BadRequestException(
         'Title, description, type, and modality are required',
       );
@@ -180,11 +187,7 @@ export class OpportunitiesService {
     return opportunity;
   }
 
-  async update(
-    id: string,
-    providerId: string,
-    dto: UpsertOpportunityDto,
-  ) {
+  async update(id: string, providerId: string, dto: UpsertOpportunityDto) {
     const existing = await this.prisma.opportunity.findUnique({
       where: { id },
     });

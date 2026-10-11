@@ -41,6 +41,7 @@ describe('OpportunitiesService in aggregator mode', () => {
           externalKey: { not: null },
           sourceName: { not: null },
           sourceUrl: { not: null },
+          sourceActive: true,
           lastSyncedAt: { gte: expect.any(Date) },
         }),
       }),
@@ -114,6 +115,7 @@ describe('OpportunitiesService in aggregator mode', () => {
           externalKey: { not: null },
           sourceName: { not: null },
           sourceUrl: { not: null },
+          sourceActive: true,
         },
       }),
     );

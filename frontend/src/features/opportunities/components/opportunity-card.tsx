@@ -8,8 +8,9 @@ export function OpportunityCard({ opportunity, locale }: { opportunity: Opportun
   const organization = opportunity.organizationName || opportunity.provider.displayName || d.organization;
   const displayDate = opportunity.closingDate || opportunity.publishedAt;
   const displayDateLabel = opportunity.closingDate ? d.closes : d.published;
+  const showDate = opportunity.type !== "COURSE";
   return <article className={`opportunity-card opportunity-${opportunity.type.toLowerCase()}`}>
-    <div className="card-top"><span className={`type-pill type-${opportunity.type.toLowerCase()}`}>{typeLabel(opportunity.type, locale)}</span><span className="card-date"><small>{displayDateLabel}</small><time dateTime={displayDate}>{new Date(displayDate).toLocaleDateString(dateLocale, { month: "short", day: "numeric", timeZone: "America/Bogota" })}</time></span></div>
+    <div className="card-top"><span className={`type-pill type-${opportunity.type.toLowerCase()}`}>{typeLabel(opportunity.type, locale)}</span>{showDate && <span className="card-date"><small>{displayDateLabel}</small><time dateTime={displayDate}>{new Date(displayDate).toLocaleDateString(dateLocale, { month: "short", day: "numeric", timeZone: "America/Bogota" })}</time></span>}</div>
     <h3><Link href={`/${locale}/opportunities/${opportunity.slug}`}>{opportunity.title}</Link></h3>
     <p className="card-organization">{organization}</p>
     <p className="card-description">{opportunity.summary || opportunity.description}</p>

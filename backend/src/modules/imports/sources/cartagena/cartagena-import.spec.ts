@@ -4,22 +4,25 @@ import {
   parseCartagenaList,
 } from './cartagena-import.js';
 
-const url = 'https://cartagena.gov.co/convocatorias/mi-primera-chamba-15668';
-const listing = { url, title: 'MI PRIMERA CHAMBA PRIMER SEMESTRE 2027...' };
+// Synthetic fixtures that reproduce the public HTML structure. They are never
+// used by the runtime importer or persisted in the database.
+const url =
+  'https://cartagena.gov.co/convocatorias/fixture-practicas-laborales-99999';
+const listing = { url, title: 'CONVOCATORIA FICTICIA DE PRÁCTICAS 2099' };
 const detail = `
-  <span class="field--name-title">CONVOCATORIA MI PRIMERA CHAMBA PRIMER SEMESTRE 2027 PARA PRÁCTICAS LABORALES</span>
-  <span class="field--name-created"><time datetime="2026-10-08T09:30:52-05:00">Oct 8, 2026</time></span>
-  <div class="field--name-field-fecha-de-cierre"><time datetime="2026-11-21T04:57:53Z">20/11/2026</time></div>`;
+  <span class="field--name-title">CONVOCATORIA FICTICIA DE PRÁCTICAS LABORALES 2099</span>
+  <span class="field--name-created"><time datetime="2099-01-08T09:30:52-05:00">Jan 8, 2099</time></span>
+  <div class="field--name-field-fecha-de-cierre"><time datetime="2099-02-21T04:57:53Z">20/02/2099</time></div>`;
 
 describe('Cartagena public listing import', () => {
   it('selects relevant open notices and follows the public pagination link', () => {
     const html = `<div id="views-bootstrap-vista-de-participacion-documental-block-1">
-      <div class="card-body"><p class="card-title"><a href="/convocatorias/mi-primera-chamba-15668">Mi Primera Chamba</a></p><small>Abierta</small></div>
+      <div class="card-body"><p class="card-title"><a href="/convocatorias/fixture-practicas-laborales-99999">Convocatoria ficticia de prácticas</a></p><small>Abierta</small></div>
       <div class="card-body"><p class="card-title"><a href="/convocatorias/old-course">Curso de formación</a></p><small>Cerrada</small></div>
       <div class="card-body"><p class="card-title"><a href="/convocatorias/election">Elección de representantes</a></p><small>Abierta</small></div>
     </div><a rel="next" href="?page=1">Next</a>`;
     expect(parseCartagenaList(html)).toEqual({
-      listings: [{ url, title: 'Mi Primera Chamba' }],
+      listings: [{ url, title: 'Convocatoria ficticia de prácticas' }],
       nextUrl: 'https://cartagena.gov.co/convocatorias?page=1',
     });
   });
@@ -28,16 +31,16 @@ describe('Cartagena public listing import', () => {
     const item = normalizeCartagenaListing(
       listing,
       detail,
-      new Date('2026-10-10T12:00:00Z'),
+      new Date('2099-01-10T12:00:00Z'),
     );
     expect(item).toMatchObject({
-      title: 'Mi Primera Chamba — prácticas laborales, primer semestre de 2027',
+      title: 'CONVOCATORIA FICTICIA DE PRÁCTICAS LABORALES 2099',
       type: 'INTERNSHIP',
       locationPhysical: 'Cartagena, Bolívar',
       sourceUrl: url,
       sourceName: 'Alcaldía de Cartagena',
     });
-    expect(item?.closingDate.toISOString()).toBe('2026-11-21T04:57:53.000Z');
+    expect(item?.closingDate.toISOString()).toBe('2099-02-21T04:57:53.000Z');
     expect(item?.description).not.toContain('PRÁCTICAS LABORALES');
   });
 
@@ -46,14 +49,14 @@ describe('Cartagena public listing import', () => {
       normalizeCartagenaListing(
         listing,
         detail,
-        new Date('2026-12-01T12:00:00Z'),
+        new Date('2099-03-01T12:00:00Z'),
       ),
     ).toBeNull();
     expect(
       normalizeCartagenaListing(
         {
           ...listing,
-          url: 'https://example.com/convocatorias/mi-primera-chamba-15668',
+          url: 'https://example.com/convocatorias/fixture-practicas-99999',
         },
         detail,
       ),

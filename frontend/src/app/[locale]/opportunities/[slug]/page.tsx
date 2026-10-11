@@ -84,7 +84,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ lo
             <div><dt>{d.eligibleLocationsLabel}</dt><dd>{eligibleText}</dd></div>
             {item.employmentType && <div><dt>{d.employmentTypeLabel}</dt><dd>{sourceDetailLabel(item.employmentType, locale)}</dd></div>}
             {item.seniority && <div><dt>{d.seniorityLabel}</dt><dd>{sourceDetailLabel(item.seniority, locale)}</dd></div>}
-            <div><dt>{d.published}</dt><dd>{new Date(item.publishedAt).toLocaleDateString(dateLocale, { timeZone: "America/Bogota" })}</dd></div>
+            {item.type !== "COURSE" && <div><dt>{d.published}</dt><dd>{new Date(item.publishedAt).toLocaleDateString(dateLocale, { timeZone: "America/Bogota" })}</dd></div>}
             {item.closingDate && <div><dt>{d.closes}</dt><dd>{new Date(item.closingDate).toLocaleDateString(dateLocale, { timeZone: "America/Bogota" })}</dd></div>}
             {item.lastSyncedAt && <div><dt>{d.lastChecked}</dt><dd>{new Date(item.lastSyncedAt).toLocaleDateString(dateLocale, { timeZone: "America/Bogota" })}</dd></div>}
             {item.sourceName && <div><dt>{d.source}</dt><dd>{item.sourceName}</dd></div>}
