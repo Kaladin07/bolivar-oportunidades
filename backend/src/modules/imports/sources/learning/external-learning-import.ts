@@ -7,9 +7,10 @@ import {
 } from '@nestjs/common';
 import { Modality, OpportunityType, UserRole } from '@prisma/client';
 import { load } from 'cheerio';
-import { Impit } from 'impit';
+import type { Impit as ImpitClient } from 'impit';
 import { CacheService } from '../../../../infrastructure/cache/cache.service.js';
 import { PrismaService } from '../../../../infrastructure/database/prisma.service.js';
+import { ImportRunCoordinator } from '../../import-run-coordinator.js';
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 const CS50_CATALOG_URL = 'https://www.edx.org/cs50';
@@ -231,22 +232,23 @@ export class ExternalLearningImportService
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
   private readonly logger = new Logger(ExternalLearningImportService.name);
-  private readonly openLearnClient = new Impit({
-    browser: 'firefox144',
-    timeout: 20000,
-  });
+  private openLearnClient?: ImpitClient;
   private timer?: NodeJS.Timeout;
   private running = false;
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly cache: CacheService,
+    private readonly coordinator: ImportRunCoordinator,
   ) {}
 
   onApplicationBootstrap() {
     if (process.env.EXTERNAL_IMPORT_ENABLED === 'false') return;
-    void this.syncIfDue();
-    this.timer = setInterval(() => void this.syncIfDue(), 60 * 60 * 1000);
+    void this.coordinator.enqueue(() => this.syncIfDue());
+    this.timer = setInterval(
+      () => void this.coordinator.enqueue(() => this.syncIfDue()),
+      60 * 60 * 1000,
+    );
     this.timer.unref();
   }
 
@@ -290,7 +292,7 @@ export class ExternalLearningImportService
   private async fetchHtml(url: string) {
     const isOpenLearn = new URL(url).hostname === 'www.open.edu';
     const response = isOpenLearn
-      ? await this.openLearnClient.fetch(url, {
+      ? await (await this.getOpenLearnClient()).fetch(url, {
           redirect: 'follow',
           signal: AbortSignal.timeout(20000),
           headers: {
@@ -316,6 +318,17 @@ export class ExternalLearningImportService
     )
       throw new Error(`Course source returned HTTP ${response.status}`);
     return { html: await response.text(), finalUrl: response.url };
+  }
+
+  private async getOpenLearnClient() {
+    if (!this.openLearnClient) {
+      const { Impit } = await import('impit');
+      this.openLearnClient = new Impit({
+        browser: 'firefox144',
+        timeout: 20000,
+      });
+    }
+    return this.openLearnClient;
   }
 
   private async discoverCs50() {

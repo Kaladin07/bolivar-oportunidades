@@ -9,6 +9,7 @@ import { Modality, OpportunityType, UserRole } from '@prisma/client';
 import { convert } from 'html-to-text';
 import { PrismaService } from '../../../../infrastructure/database/prisma.service.js';
 import { CacheService } from '../../../../infrastructure/cache/cache.service.js';
+import { ImportRunCoordinator } from '../../import-run-coordinator.js';
 
 type HimalayasJob = {
   guid?: unknown;
@@ -158,12 +159,16 @@ export class ExternalImportService
   constructor(
     private readonly prisma: PrismaService,
     private readonly cache: CacheService,
+    private readonly coordinator: ImportRunCoordinator,
   ) {}
 
   onApplicationBootstrap() {
     if (process.env.EXTERNAL_IMPORT_ENABLED === 'false') return;
-    void this.syncIfDue();
-    this.timer = setInterval(() => void this.syncIfDue(), 60 * 60 * 1000);
+    void this.coordinator.enqueue(() => this.syncIfDue());
+    this.timer = setInterval(
+      () => void this.coordinator.enqueue(() => this.syncIfDue()),
+      60 * 60 * 1000,
+    );
     this.timer.unref();
   }
 

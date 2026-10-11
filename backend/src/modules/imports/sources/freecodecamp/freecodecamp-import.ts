@@ -8,6 +8,7 @@ import {
 import { Modality, OpportunityType, UserRole } from '@prisma/client';
 import { CacheService } from '../../../../infrastructure/cache/cache.service.js';
 import { PrismaService } from '../../../../infrastructure/database/prisma.service.js';
+import { ImportRunCoordinator } from '../../import-run-coordinator.js';
 
 const SOURCE = 'freecodecamp';
 const SOURCE_NAME = 'freeCodeCamp';
@@ -128,6 +129,7 @@ export class FreeCodeCampImportService
   constructor(
     private readonly prisma: PrismaService,
     private readonly cache: CacheService,
+    private readonly coordinator: ImportRunCoordinator,
   ) {}
 
   onApplicationBootstrap() {
@@ -136,8 +138,11 @@ export class FreeCodeCampImportService
       process.env.EXTERNAL_IMPORT_ENABLED === 'false'
     )
       return;
-    void this.syncIfDue();
-    this.timer = setInterval(() => void this.syncIfDue(), 60 * 60 * 1000);
+    void this.coordinator.enqueue(() => this.syncIfDue());
+    this.timer = setInterval(
+      () => void this.coordinator.enqueue(() => this.syncIfDue()),
+      60 * 60 * 1000,
+    );
     this.timer.unref();
   }
 
