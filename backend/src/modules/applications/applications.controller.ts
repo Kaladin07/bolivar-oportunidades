@@ -10,13 +10,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
+import { InternalFeaturesGuard } from '../../infrastructure/config/internal-features.guard.js';
 import { AuthGuard } from '../auth/guards/auth.guard.js';
 import type { AuthRequest } from '../auth/types/auth-request.type.js';
 import { ApplicationsService } from './applications.service.js';
 import { UpdateApplicationStatusDto } from './dto/update-application-status.dto.js';
 
 @Controller('applications')
-@UseGuards(AuthGuard)
+@UseGuards(InternalFeaturesGuard, AuthGuard)
 export class ApplicationsController {
   constructor(private readonly applications: ApplicationsService) {}
 

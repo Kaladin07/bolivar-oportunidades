@@ -8,6 +8,7 @@ export function SearchForm({ locale, values = {} }: { locale: Locale; values?: R
       <label className="search-field"><span>{d.type}</span><select name="type" defaultValue={values.type || ""}><option value="">{d.allTypes}</option><option value="EMPLOYMENT">{d.employment}</option><option value="INTERNSHIP">{d.internship}</option><option value="COURSE">{d.course}</option><option value="SCHOLARSHIP">{d.scholarship}</option></select></label>
       <label className="search-field"><span>{d.modality}</span><select name="modality" defaultValue={values.modality || ""}><option value="">{d.allModalities}</option><option value="IN_PERSON">{d.inPerson}</option><option value="REMOTE">{d.remote}</option><option value="HYBRID">{d.hybrid}</option></select></label>
       <label className="search-field"><span>{d.location}</span><input name="location" defaultValue={values.location} placeholder={d.locationPlaceholder} /></label>
+      <label className="search-field"><span>{d.sort}</span><select name="sort" defaultValue={values.sort || "recent"}><option value="recent">{d.recentFirst}</option><option value="closing">{d.closingFirst}</option></select></label>
       <button className="button search-button" type="submit">{d.search} <span aria-hidden>→</span></button>
     </div>
   </form>;

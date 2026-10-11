@@ -25,68 +25,72 @@ export class OpportunitiesService {
 
   async search(query: SearchOpportunitiesDto) {
     const page = query.page || 1;
+    const keyword = query.q?.trim();
+    const location = query.location?.trim();
     const version = await this.cache.version();
     const key = `opportunities:${version}:${JSON.stringify({
-      q: query.q,
+      q: keyword,
       type: query.type,
       modality: query.modality,
-      location: query.location,
+      location,
+      sort: query.sort,
       page,
     })}`;
     const cached = await this.cache.get<unknown>(key);
     if (cached) return cached;
 
-    const where: Prisma.OpportunityWhereInput = {
-      OR: [{ closingDate: null }, { closingDate: { gte: new Date() } }],
-      AND: [
-        {
-          OR: [
-            { externalKey: null },
-            {
-              lastSyncedAt: {
-                gte: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000),
-              },
+    const filters: Prisma.OpportunityWhereInput[] = [];
+    if (keyword) {
+      filters.push({
+        OR: [
+          { title: { contains: keyword, mode: 'insensitive' } },
+          { summary: { contains: keyword, mode: 'insensitive' } },
+          { description: { contains: keyword, mode: 'insensitive' } },
+          { organizationName: { contains: keyword, mode: 'insensitive' } },
+          { sourceName: { contains: keyword, mode: 'insensitive' } },
+          { locationPhysical: { contains: keyword, mode: 'insensitive' } },
+          {
+            categories: {
+              some: { name: { contains: keyword, mode: 'insensitive' } },
             },
-          ],
-        },
-        ...(query.q
-          ? [
-              {
-                OR: [
-                  {
-                    title: {
-                      contains: query.q,
-                      mode: 'insensitive' as const,
-                    },
-                  },
-                  {
-                    description: {
-                      contains: query.q,
-                      mode: 'insensitive' as const,
-                    },
-                  },
-                ],
-              },
-            ]
-          : []),
-      ],
+          },
+        ],
+      });
+    }
+    if (location) {
+      filters.push({
+        OR: [
+          { locationPhysical: { contains: location, mode: 'insensitive' } },
+          { eligibleLocations: { has: location } },
+        ],
+      });
+    }
+
+    const where: Prisma.OpportunityWhereInput = {
+      externalKey: { not: null },
+      sourceName: { not: null },
+      sourceUrl: { not: null },
+      lastSyncedAt: {
+        gte: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000),
+      },
+      OR: [{ closingDate: null }, { closingDate: { gte: new Date() } }],
+      AND: filters,
       ...(query.type ? { type: query.type } : {}),
       ...(query.modality ? { modality: query.modality } : {}),
-      ...(query.location
-        ? {
-            locationPhysical: {
-              contains: query.location,
-              mode: 'insensitive',
-            },
-          }
-        : {}),
     };
+    const orderBy: Prisma.OpportunityOrderByWithRelationInput[] =
+      query.sort === 'closing'
+        ? [
+            { closingDate: { sort: 'asc', nulls: 'last' } },
+            { publishedAt: 'desc' },
+          ]
+        : [{ publishedAt: 'desc' }];
 
     const [items, total] = await this.prisma.$transaction([
       this.prisma.opportunity.findMany({
         where,
         include: publicInclude,
-        orderBy: { publishedAt: 'desc' },
+        orderBy,
         skip: (page - 1) * 12,
         take: 12,
       }),
@@ -98,12 +102,17 @@ export class OpportunitiesService {
   }
 
   async one(slug: string) {
-    const opportunity = await this.prisma.opportunity.findUnique({
-      where: { slug },
+    const opportunity = await this.prisma.opportunity.findFirst({
+      where: {
+        slug,
+        externalKey: { not: null },
+        sourceName: { not: null },
+        sourceUrl: { not: null },
+      },
       include: publicInclude,
     });
     const externalExpired =
-      opportunity?.externalKey &&
+      opportunity &&
       ((opportunity.closingDate && opportunity.closingDate < new Date()) ||
         !opportunity.lastSyncedAt ||
         opportunity.lastSyncedAt <

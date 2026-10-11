@@ -199,10 +199,6 @@ body { background:#FCFDFC; color:var(--ink); }
 .hero h1 { max-width:720px; margin:20px 0 18px; font-size:clamp(39px,4.5vw,61px); line-height:1.06; letter-spacing:-.048em; }
 .hero-copy>p { max-width:610px; color:#536861; font-size:17px; line-height:1.68; }
 .hero-actions { margin-top:30px; }
-.hero-proof { display:flex; align-items:stretch; gap:0; margin-top:46px; padding-top:22px; border-top:1px solid #CFDDD3; max-width:610px; }
-.hero-proof span { display:grid; grid-template-columns:auto 1fr; align-items:baseline; gap:7px; width:33.333%; padding-right:18px; color:#6B7F78; font-size:11px; line-height:1.25; }
-.hero-proof span+span { padding-left:18px; border-left:1px solid #CFDDD3; }
-.hero-proof strong { color:var(--forest); font-size:22px; letter-spacing:-.035em; }
 .hero-media { position:relative; }
 .hero-photo-frame { position:relative; padding:9px; background:#fff; border:1px solid #D5E1D8; border-radius:14px 14px 14px 48px; box-shadow:var(--shadow); }
 .hero-media img { height:390px; border-radius:8px 8px 8px 38px; }
@@ -301,8 +297,6 @@ body { background:#FCFDFC; color:var(--ink); }
 @media(max-width:1050px) {
   .hero-grid { grid-template-columns:minmax(0,1fr) 330px; gap:42px; }
   .hero h1 { font-size:clamp(38px,5vw,52px); }
-  .hero-proof span { display:block; }
-  .hero-proof strong { display:block; margin-bottom:3px; }
   .detail-grid { gap:30px; }
 }
 
@@ -319,10 +313,6 @@ body { background:#FCFDFC; color:var(--ink); }
   .hero-copy { padding:54px 0 34px; }
   .hero h1 { font-size:clamp(35px,10vw,45px); }
   .hero-copy>p { font-size:16px; }
-  .hero-proof { margin-top:35px; }
-  .hero-proof span { padding-right:10px; font-size:10px; }
-  .hero-proof span+span { padding-left:10px; }
-  .hero-proof strong { font-size:20px; }
   .hero-media { padding-bottom:48px; }
   .hero-photo-frame { border-radius:12px 12px 12px 38px; }
   .hero-media img { height:285px; border-radius:7px 7px 7px 30px; }
@@ -344,4 +334,60 @@ body { background:#FCFDFC; color:var(--ink); }
   .detail-hero::after,.detail-hero::before { display:none; }
   .detail-grid { margin-top:30px; }
   .detail-sidebar { order:0; }
+}
+
+/* Public discovery: filters, opportunity summaries, and compact responsive layout */
+.listing-page .search-grid { grid-template-columns:minmax(190px,1.55fr) repeat(4,minmax(130px,1fr)) auto; }
+.active-filters { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:16px; color:var(--muted); font-size:12px; }
+.active-filters>span { margin-right:2px; color:var(--forest); font-weight:700; }
+.active-filters a { display:inline-flex; align-items:center; gap:7px; min-height:34px; padding:6px 10px; background:#fff; border:1px solid #CFDED3; border-radius:999px; color:#435951; font-weight:650; }
+.active-filters a:hover { border-color:#97B6A4; color:var(--forest); }
+.active-filters a span { font-size:16px; line-height:1; }
+.results-heading { flex-wrap:wrap; }
+.card-date { display:grid; gap:1px; text-align:right; line-height:1.2; }
+.card-date small { color:#819089; font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+.card-date time { color:#4F655C; font-size:12px; font-weight:700; }
+.card-organization { margin:-3px 0 11px; color:#40574D; font-size:13px; font-weight:700; line-height:1.35; }
+.card-source { display:grid; gap:2px; max-width:62%; color:#435951; font-weight:650; line-height:1.3; }
+.card-source small { color:#819089; font-size:9px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; }
+.pagination { align-items:center; flex-wrap:wrap; }
+.pagination-pages { display:flex; gap:8px; }
+.pagination a { display:inline-flex; align-items:center; justify-content:center; min-height:40px; }
+.pagination-step { color:var(--forest); font-size:13px; font-weight:700; }
+
+@media(max-width:1180px) {
+  .listing-page .search-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .listing-page .search-button { grid-column:span 3; margin:8px 0 0; }
+}
+
+@media(max-width:760px) {
+  .listing-page { padding-block:36px 64px; background:linear-gradient(#F4F8F4 0 270px,#FCFDFC 270px); }
+  .listing-page .page-heading h1 { font-size:clamp(32px,10vw,40px); }
+  .listing-page .search-panel { margin-top:25px; }
+  .listing-page .search-grid { grid-template-columns:1fr; }
+  .listing-page .search-button { grid-column:auto; min-height:50px; margin:8px 0 0; }
+  .active-filters { align-items:flex-start; }
+  .active-filters>span { width:100%; }
+  .results-heading { margin-top:27px; }
+  .card-grid { gap:14px; margin-top:20px; }
+  .opportunity-card { min-height:0; padding:18px 18px 17px; }
+  .opportunity-card h3 { margin:15px 0 8px; font-size:18px; line-height:1.3; }
+  .card-description { margin-bottom:13px; -webkit-line-clamp:3; }
+  .card-bottom { align-items:center; margin-top:16px; padding-top:14px; }
+  .card-link>span:first-child { display:inline; }
+  .card-source { max-width:58%; }
+  .pagination { justify-content:space-between; gap:12px; }
+  .pagination-pages { order:3; width:100%; justify-content:center; }
+  .pagination-step { flex:1; }
+  .detail-page { padding:20px 0 58px; background:linear-gradient(#F2F7F3 0 430px,#FCFDFC 430px); }
+  .detail-breadcrumb { margin-bottom:20px; }
+  .detail-hero { padding:22px 18px 24px; }
+  .detail-hero h1 { font-size:clamp(27px,8vw,34px); line-height:1.18; }
+  .detail-hero-summary { font-size:14px; line-height:1.55; }
+  .detail-grid { gap:24px; margin-top:24px; }
+  .detail-sidebar { order:-1; padding:20px; }
+  .detail-main { padding-bottom:12px; }
+  .detail-section-heading { margin-bottom:21px; }
+  .description-body { font-size:15px; line-height:1.65; }
+  .detail-apply .button { min-height:50px; }
 }

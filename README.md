@@ -1,6 +1,6 @@
 # Bolivar Opportunities
 
-A bilingual opportunity platform for young people in Bolivar, Colombia. The interface defaults to Spanish and is also available in English.
+A bilingual public aggregator of jobs, internships, courses, and scholarships for young people in Bolivar, Colombia. The interface defaults to Spanish and is also available in English. Applications and authoritative requirements remain on each original source.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the architecture decision, request flow, and production follow-up work.
 
@@ -12,6 +12,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the architecture decision, request fl
 - PostgreSQL: users, profiles, opportunities, categories, and applications, managed with Prisma.
 - Redis: best-effort cache for public opportunity searches. Database queries continue when Redis is unavailable.
 - External imports: the backend checks the Himalayas public API for remote jobs and Cartagena's public calls page for relevant local opportunities once per day. Each listing links to its original source with visible attribution.
+- Public aggregator mode: account, dashboard, manual publishing, and internal application routes are disabled by default with `INTERNAL_FEATURES_ENABLED=false`.
 
 ## Local development
 
@@ -32,6 +33,8 @@ The Cartagena adapter reads the [public calls page](https://cartagena.gov.co/con
 For UI testing without external data, `npm run db:seed` from the repository root creates clearly labeled demo listings and a demo provider account (`demo-provider@example.com`, password `DemoPassword123!`). Set `SEED_PROVIDER_PASSWORD` before seeding to choose a different password.
 
 The frontend calls the API through a same-origin `/api` rewrite, so authentication cookies stay on the frontend origin. Public pages are server rendered and indexable. Set `API_INTERNAL_URL` to the backend's server-side address when deploying the frontend separately.
+
+Set `INTERNAL_FEATURES_ENABLED=true` only if the dormant account, manual publishing, and internal application modules are intentionally restored together with their frontend routes.
 
 ## Deployment notes
 
