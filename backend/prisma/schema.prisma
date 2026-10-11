@@ -56,38 +56,40 @@ model Profile {
 }
 
 model Opportunity {
-  id               String          @id @default(cuid())
-  slug             String          @unique
-  title            String
-  description      String          @db.Text
-  summary          String?         @db.Text
-  type             OpportunityType
-  modality         Modality
-  locationPhysical String?
-  closingDate      DateTime?
-  publishedAt      DateTime        @default(now())
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  providerId       String
-  organizationName String?
-  externalKey      String?         @unique
-  sourceName       String?
-  sourceUrl        String?
-  lastSyncedAt     DateTime?
-  employmentType   String?
-  seniority        String?
-  salaryMin        Int?
-  salaryMax        Int?
-  salaryCurrency   String?
-  salaryPeriod     String?
-  eligibleLocations String[]       @default([])
-  provider         User            @relation(fields: [providerId], references: [id], onDelete: Cascade)
-  categories       Category[]
-  applications     Application[]
+  id                String          @id @default(cuid())
+  slug              String          @unique
+  title             String
+  description       String          @db.Text
+  summary           String?         @db.Text
+  type              OpportunityType
+  modality          Modality
+  locationPhysical  String?
+  closingDate       DateTime?
+  publishedAt       DateTime        @default(now())
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  providerId        String
+  organizationName  String?
+  externalKey       String?         @unique
+  sourceName        String?
+  sourceUrl         String?
+  lastSyncedAt      DateTime?
+  sourceActive      Boolean         @default(true)
+  employmentType    String?
+  seniority         String?
+  salaryMin         Int?
+  salaryMax         Int?
+  salaryCurrency    String?
+  salaryPeriod      String?
+  eligibleLocations String[]        @default([])
+  provider          User            @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  categories        Category[]
+  applications      Application[]
 
   @@index([type, modality, publishedAt])
   @@index([locationPhysical])
   @@index([providerId])
+  @@index([sourceActive, lastSyncedAt])
 }
 
 model ImportState {
@@ -102,14 +104,14 @@ model Category {
 }
 
 model Application {
-  id            String            @id @default(cuid())
-  youthId       String
-  opportunityId String
-  status        ApplicationStatus @default(PENDING)
-  appliedAt     DateTime          @default(now())
+  id              String            @id @default(cuid())
+  youthId         String
+  opportunityId   String
+  status          ApplicationStatus @default(PENDING)
+  appliedAt       DateTime          @default(now())
   profileSnapshot Json
-  youth         User              @relation(fields: [youthId], references: [id], onDelete: Cascade)
-  opportunity   Opportunity       @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  youth           User              @relation(fields: [youthId], references: [id], onDelete: Cascade)
+  opportunity     Opportunity       @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
 
   @@unique([youthId, opportunityId])
   @@index([opportunityId, appliedAt])

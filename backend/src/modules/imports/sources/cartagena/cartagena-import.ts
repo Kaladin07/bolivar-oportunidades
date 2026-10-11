@@ -131,6 +131,7 @@ export function normalizeCartagenaListing(
     publishedAt,
     closingDate,
     lastSyncedAt: now,
+    sourceActive: true,
   };
 }
 
@@ -246,7 +247,7 @@ export class CartagenaImportService
         externalKey: { notIn: opportunities.map((item) => item.externalKey) },
         closingDate: { gt: now },
       },
-      data: { closingDate: now },
+      data: { closingDate: now, sourceActive: false },
     });
     await this.prisma.importState.upsert({
       where: { source: SOURCE },
