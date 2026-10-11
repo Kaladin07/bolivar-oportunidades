@@ -30,10 +30,15 @@ describe('external learning imports', () => {
   it('extracts title and description from a course detail page', () => {
     expect(
       parseCourseDetail(`
-        <html><head><meta name="description" content="External description"></head>
-        <body><main><h1>CS50 course</h1></main></body></html>
+        <html><head>
+          <meta content="External description &amp; details" name="description">
+          <meta content="CS50&#x27;s course | edX" property="og:title">
+        </head><body></body></html>
       `),
-    ).toEqual({ title: 'CS50 course', description: 'External description' });
+    ).toEqual({
+      title: "CS50's course",
+      description: 'External description & details',
+    });
   });
 
   it('discovers OpenLearn cards and safe pagination', () => {

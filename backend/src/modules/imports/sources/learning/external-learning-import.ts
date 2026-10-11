@@ -101,17 +101,59 @@ export function parseCs50Catalog(html: string) {
   return [...courses.values()];
 }
 
+function decodeHtmlText(value: string) {
+  const namedEntities: Record<string, string> = {
+    amp: '&',
+    apos: "'",
+    gt: '>',
+    lt: '<',
+    nbsp: ' ',
+    quot: '"',
+  };
+  return value.replace(
+    /&(?:#(\d+)|#x([\da-f]+)|([a-z]+));/gi,
+    (entity, decimal: string, hexadecimal: string, named: string) => {
+      if (decimal) return String.fromCodePoint(Number.parseInt(decimal, 10));
+      if (hexadecimal)
+        return String.fromCodePoint(Number.parseInt(hexadecimal, 16));
+      return namedEntities[named.toLowerCase()] ?? entity;
+    },
+  );
+}
+
+function htmlAttribute(tag: string, attribute: string) {
+  const match = tag.match(
+    new RegExp(`${attribute}\\s*=\\s*(["'])(.*?)\\1`, 'i'),
+  );
+  return match ? decodeHtmlText(match[2]) : '';
+}
+
+function metaContent(html: string, key: 'name' | 'property', value: string) {
+  for (const match of html.matchAll(/<meta\b[^>]*>/gi)) {
+    if (htmlAttribute(match[0], key).toLowerCase() === value)
+      return htmlAttribute(match[0], 'content');
+  }
+  return '';
+}
+
+function elementText(html: string, element: 'h1' | 'title') {
+  const match = html.match(
+    new RegExp(`<${element}\\b[^>]*>([\\s\\S]*?)<\\/${element}>`, 'i'),
+  );
+  return match
+    ? decodeHtmlText(match[1].replace(/<[^>]*>/g, ' '))
+    : '';
+}
+
 export function parseCourseDetail(html: string) {
-  const $ = load(html);
   const title = cleanText(
-    $('h1').first().text() ||
-      $('meta[property="og:title"]').attr('content') ||
-      $('title').text(),
+    elementText(html, 'h1') ||
+      metaContent(html, 'property', 'og:title') ||
+      elementText(html, 'title'),
   ).replace(/\s*[|–-]\s*edX\s*$/i, '');
   const description = cleanText(
-    $('meta[name="description"]').attr('content') ||
-      $('meta[property="og:description"]').attr('content') ||
-      $('main p').first().text(),
+    metaContent(html, 'name', 'description') ||
+      metaContent(html, 'property', 'og:description'),
   );
   if (!title || !description)
     throw new Error('Course detail has no title or description');
