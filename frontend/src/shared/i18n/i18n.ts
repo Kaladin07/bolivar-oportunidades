@@ -1,0 +1,54 @@
+export const locales = ["es", "en"] as const;
+export type Locale = (typeof locales)[number];
+
+const spanish = {
+  brand: "Bolívar Oportunidades", home: "Inicio", explore: "Explorar", dashboard: "Mi espacio", login: "Ingresar", register: "Crear cuenta", logout: "Salir",
+  eyebrow: "OPORTUNIDADES QUE NOS MUEVEN", heroTitle: "Tu próximo paso comienza aquí.", heroText: "Empleos, prácticas, cursos y becas para jóvenes de Bolívar. Encuentra una oportunidad cerca de ti o trabaja desde cualquier lugar.",
+  browse: "Explorar oportunidades", join: "Publicar una oportunidad", searchTitle: "Encuentra lo que buscas", searchHint: "Explora oportunidades reales, filtra por modalidad y descubre nuevos caminos.",
+  searchPlaceholder: "Cargo, habilidad o palabra clave", search: "Buscar", allTypes: "Todas las oportunidades", allModalities: "Todas las modalidades", locationPlaceholder: "Municipio, por ejemplo Cartagena", clear: "Limpiar filtros",
+  latest: "Oportunidades recientes", latestText: "Un punto de partida para lo que viene.", viewAll: "Ver todas", results: "resultados", noResults: "No encontramos oportunidades con esos filtros.", noResultsHint: "Prueba otra búsqueda o quita algunos filtros.", unavailable: "No pudimos cargar las oportunidades. Intenta de nuevo más tarde.",
+  employment: "Empleo", internship: "Práctica", course: "Curso", scholarship: "Beca", inPerson: "Presencial", remote: "Remoto", hybrid: "Híbrido", location: "Ubicación", closes: "Cierra", viewDetails: "Ver detalles", apply: "Postularme", applying: "Enviando...", applied: "Postulación enviada", completeProfile: "Completa tu perfil antes de postularte.",
+  source: "Fuente", applyAtSource: "Ver oferta y postularme en la fuente original", externalNotice: "Esta oportunidad proviene de una fuente externa. La postulación se realiza en su sitio.",
+  published: "Publicada", employmentTypeLabel: "Tipo de contrato", seniorityLabel: "Experiencia", salaryLabel: "Salario", eligibleLocationsLabel: "Disponible desde", worldwide: "Todo el mundo", salaryMonthly: "al mes", salaryAnnual: "al año", salaryHourly: "por hora", salaryWeekly: "por semana", salaryFortnightly: "cada dos semanas",
+  detailEyebrow: "DESCUBRE TU PRÓXIMO PASO", detailAbout: "Sobre esta oportunidad", detailFacts: "Datos clave", detailSummary: "En pocas palabras", detailExternal: "OFERTA EXTERNA", detailLocal: "PUBLICACIÓN DIRECTA",
+  howTitle: "Un lugar para avanzar", howText: "Conecta tu talento con organizaciones que creen en el futuro de Bolívar.", howOne: "Descubre", howOneText: "Busca oportunidades por área, municipio o modalidad.", howTwo: "Prepárate", howTwoText: "Crea tu perfil y muestra lo que sabes hacer.", howThree: "Da el paso", howThreeText: "Postúlate en un clic y sigue el estado de tu solicitud.",
+  calloutTitle: "Las oportunidades crecen cuando se comparten.", calloutText: "¿Tu organización tiene algo para ofrecer a la juventud de Bolívar?", calloutButton: "Publica con nosotros", footerText: "Más caminos para el talento de Bolívar.",
+  accountTitle: "Tu camino empieza aquí", accountText: "Crea tu cuenta para postularte o publicar oportunidades.", email: "Correo electrónico", password: "Contraseña", role: "Quiero", youth: "Encontrar oportunidades", provider: "Publicar oportunidades", organizationName: "Nombre de la organización", organization: "Organización", city: "Municipio", createAccount: "Crear cuenta", loginTitle: "Bienvenido de nuevo", loginText: "Ingresa para continuar donde quedaste.", signIn: "Ingresar", haveAccount: "¿Ya tienes cuenta?", noAccount: "¿Aún no tienes cuenta?", errorGeneric: "Ocurrió un error. Revisa los datos e intenta de nuevo.",
+  profileTitle: "Mi perfil", profileText: "Tu perfil se comparte con la organización cuando te postulas.", bio: "Sobre mí", bioPlaceholder: "Cuéntanos sobre tus intereses y experiencia", skills: "Habilidades", skillsPlaceholder: "Separadas por comas", education: "Nivel educativo", save: "Guardar cambios", saved: "Cambios guardados", myApplications: "Mis postulaciones", status: "Estado", pending: "Pendiente", accepted: "Aceptada", rejected: "Rechazada", noApplications: "Aún no tienes postulaciones.",
+  providerTitle: "Panel de organización", providerText: "Publica oportunidades y revisa las postulaciones desde un solo lugar.", newOpportunity: "Nueva oportunidad", myOpportunities: "Mis oportunidades", applicants: "Postulaciones", edit: "Editar", delete: "Eliminar", title: "Título", description: "Descripción", type: "Tipo", modality: "Modalidad", physicalLocation: "Municipio o ubicación", closingDate: "Fecha de cierre", categories: "Categorías (separadas por comas)", publish: "Publicar oportunidad", update: "Guardar oportunidad", cancel: "Cancelar", deleteConfirm: "¿Eliminar esta oportunidad y sus postulaciones?", noOpportunities: "Aún no has publicado oportunidades.", applicant: "Postulante", appliedAt: "Fecha de postulación", noApplicants: "Aún no hay postulaciones.", review: "Revisar", selectStatus: "Cambiar estado", back: "Volver", by: "Publicado por", opportunityNotFound: "No encontramos esta oportunidad.", signInToApply: "Ingresa como joven para postularte.", providerOnly: "Esta sección es para organizaciones.", youthOnly: "Esta sección es para jóvenes.",
+} as const;
+
+const english: Record<keyof typeof spanish, string> = {
+  brand: "Bolívar Oportunidades", home: "Home", explore: "Explore", dashboard: "Dashboard", login: "Sign in", register: "Create account", logout: "Sign out",
+  eyebrow: "OPPORTUNITIES THAT MOVE US", heroTitle: "Your next step starts here.", heroText: "Jobs, internships, courses, and scholarships for young people in Bolivar. Find an opportunity nearby or work from anywhere.",
+  browse: "Explore opportunities", join: "Post an opportunity", searchTitle: "Find what fits", searchHint: "Explore opportunities, filter by work mode, and discover new paths.",
+  searchPlaceholder: "Role, skill, or keyword", search: "Search", allTypes: "All opportunities", allModalities: "All work modes", locationPlaceholder: "Municipality, for example Cartagena", clear: "Clear filters",
+  latest: "Recent opportunities", latestText: "A starting point for what comes next.", viewAll: "View all", results: "results", noResults: "No opportunities match these filters.", noResultsHint: "Try another search or remove some filters.", unavailable: "We couldn't load opportunities. Please try again later.",
+  employment: "Job", internship: "Internship", course: "Course", scholarship: "Scholarship", inPerson: "In person", remote: "Remote", hybrid: "Hybrid", location: "Location", closes: "Closes", viewDetails: "View details", apply: "Apply now", applying: "Submitting...", applied: "Application sent", completeProfile: "Complete your profile before applying.",
+  source: "Source", applyAtSource: "View listing and apply at the original source", externalNotice: "This opportunity comes from an external source. Apply on its website.",
+  published: "Published", employmentTypeLabel: "Employment type", seniorityLabel: "Experience level", salaryLabel: "Salary", eligibleLocationsLabel: "Available from", worldwide: "Worldwide", salaryMonthly: "per month", salaryAnnual: "per year", salaryHourly: "per hour", salaryWeekly: "per week", salaryFortnightly: "every two weeks",
+  detailEyebrow: "FIND YOUR NEXT STEP", detailAbout: "About this opportunity", detailFacts: "Key details", detailSummary: "At a glance", detailExternal: "EXTERNAL LISTING", detailLocal: "DIRECT LISTING",
+  howTitle: "One place to move forward", howText: "Connect your talent with organizations investing in Bolivar's future.", howOne: "Discover", howOneText: "Search by field, municipality, or work mode.", howTwo: "Get ready", howTwoText: "Create a profile and show what you can do.", howThree: "Take the step", howThreeText: "Apply in one click and track your application.",
+  calloutTitle: "Opportunities grow when shared.", calloutText: "Does your organization have something to offer young people in Bolivar?", calloutButton: "Post with us", footerText: "More paths for Bolivar's talent.",
+  accountTitle: "Your journey starts here", accountText: "Create an account to apply or post opportunities.", email: "Email address", password: "Password", role: "I want to", youth: "Find opportunities", provider: "Post opportunities", organizationName: "Organization name", organization: "Organization", city: "Municipality", createAccount: "Create account", loginTitle: "Welcome back", loginText: "Sign in to pick up where you left off.", signIn: "Sign in", haveAccount: "Already have an account?", noAccount: "New here?", errorGeneric: "Something went wrong. Check your details and try again.",
+  profileTitle: "My profile", profileText: "Your profile is shared with the organization when you apply.", bio: "About me", bioPlaceholder: "Tell us about your interests and experience", skills: "Skills", skillsPlaceholder: "Separate with commas", education: "Education level", save: "Save changes", saved: "Changes saved", myApplications: "My applications", status: "Status", pending: "Pending", accepted: "Accepted", rejected: "Rejected", noApplications: "You haven't applied yet.",
+  providerTitle: "Organization dashboard", providerText: "Post opportunities and review applications in one place.", newOpportunity: "New opportunity", myOpportunities: "My opportunities", applicants: "Applications", edit: "Edit", delete: "Delete", title: "Title", description: "Description", type: "Type", modality: "Work mode", physicalLocation: "Municipality or location", closingDate: "Closing date", categories: "Categories (comma separated)", publish: "Post opportunity", update: "Save opportunity", cancel: "Cancel", deleteConfirm: "Delete this opportunity and its applications?", noOpportunities: "You haven't posted opportunities yet.", applicant: "Applicant", appliedAt: "Applied on", noApplicants: "No applications yet.", review: "Review", selectStatus: "Change status", back: "Back", by: "Posted by", opportunityNotFound: "We couldn't find this opportunity.", signInToApply: "Sign in as a young person to apply.", providerOnly: "This area is for organizations.", youthOnly: "This area is for young people.",
+};
+
+export function dictionary(locale: Locale): Record<keyof typeof spanish, string> {
+  return locale === "en" ? english : spanish;
+}
+
+export function isLocale(value: string): value is Locale {
+  return locales.includes(value as Locale);
+}
+
+export function typeLabel(type: string, locale: Locale) {
+  const d = dictionary(locale);
+  return ({ EMPLOYMENT: d.employment, INTERNSHIP: d.internship, COURSE: d.course, SCHOLARSHIP: d.scholarship } as Record<string, string>)[type] ?? type;
+}
+
+export function modalityLabel(modality: string, locale: Locale) {
+  const d = dictionary(locale);
+  return ({ IN_PERSON: d.inPerson, REMOTE: d.remote, HYBRID: d.hybrid } as Record<string, string>)[modality] ?? modality;
+}

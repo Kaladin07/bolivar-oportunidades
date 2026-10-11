@@ -1,0 +1,11 @@
+node_modules
+.next
+.next*
+dist
+.env
+.env.local
+.appdata
+coverage
+*.log
+ARCHITECTURE.md
+BRAND.md

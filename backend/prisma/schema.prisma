@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  YOUTH
+  PROVIDER
+}
+
+enum OpportunityType {
+  EMPLOYMENT
+  INTERNSHIP
+  COURSE
+  SCHOLARSHIP
+}
+
+enum Modality {
+  IN_PERSON
+  REMOTE
+  HYBRID
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model User {
+  id            String        @id @default(cuid())
+  email         String        @unique
+  displayName   String?
+  passwordHash  String
+  role          UserRole
+  location      String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  profile       Profile?
+  opportunities Opportunity[]
+  applications  Application[]
+}
+
+model Profile {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  bio            String?  @db.Text
+  skills         String[]
+  educationLevel String?
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Opportunity {
+  id               String          @id @default(cuid())
+  slug             String          @unique
+  title            String
+  description      String          @db.Text
+  summary          String?         @db.Text
+  type             OpportunityType
+  modality         Modality
+  locationPhysical String?
+  closingDate      DateTime?
+  publishedAt      DateTime        @default(now())
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  providerId       String
+  organizationName String?
+  externalKey      String?         @unique
+  sourceName       String?
+  sourceUrl        String?
+  lastSyncedAt     DateTime?
+  employmentType   String?
+  seniority        String?
+  salaryMin        Int?
+  salaryMax        Int?
+  salaryCurrency   String?
+  salaryPeriod     String?
+  eligibleLocations String[]       @default([])
+  provider         User            @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  categories       Category[]
+  applications     Application[]
+
+  @@index([type, modality, publishedAt])
+  @@index([locationPhysical])
+  @@index([providerId])
+}
+
+model ImportState {
+  source        String   @id
+  lastSuccessAt DateTime
+}
+
+model Category {
+  id            String        @id @default(cuid())
+  name          String        @unique
+  opportunities Opportunity[]
+}
+
+model Application {
+  id            String            @id @default(cuid())
+  youthId       String
+  opportunityId String
+  status        ApplicationStatus @default(PENDING)
+  appliedAt     DateTime          @default(now())
+  profileSnapshot Json
+  youth         User              @relation(fields: [youthId], references: [id], onDelete: Cascade)
+  opportunity   Opportunity       @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+
+  @@unique([youthId, opportunityId])
+  @@index([opportunityId, appliedAt])
+}
