@@ -2,6 +2,7 @@ import { Modality, OpportunityType } from '@prisma/client';
 import { Transform, Type } from 'class-transformer';
 import {
   IsEnum,
+  IsIn,
   IsInt,
   IsOptional,
   IsString,
@@ -30,6 +31,11 @@ export class SearchOpportunitiesDto {
   @IsString()
   @MaxLength(100)
   location?: string;
+
+  @Transform(({ value }) => (value === '' ? undefined : value))
+  @IsOptional()
+  @IsIn(['recent', 'closing'])
+  sort?: 'recent' | 'closing';
 
   @IsOptional()
   @Type(() => Number)

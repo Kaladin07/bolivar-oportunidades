@@ -12,6 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
+import { InternalFeaturesGuard } from '../../infrastructure/config/internal-features.guard.js';
 import { AuthGuard } from '../auth/guards/auth.guard.js';
 import type { AuthRequest } from '../auth/types/auth-request.type.js';
 import { SearchOpportunitiesDto } from './dto/search-opportunities.dto.js';
@@ -28,7 +29,7 @@ export class OpportunitiesController {
   }
 
   @Get('mine')
-  @UseGuards(AuthGuard)
+  @UseGuards(InternalFeaturesGuard, AuthGuard)
   mine(@Req() request: AuthRequest) {
     if (request.user.role !== UserRole.PROVIDER) {
       throw new ForbiddenException();
@@ -42,7 +43,7 @@ export class OpportunitiesController {
   }
 
   @Post()
-  @UseGuards(AuthGuard)
+  @UseGuards(InternalFeaturesGuard, AuthGuard)
   create(
     @Req() request: AuthRequest,
     @Body() dto: UpsertOpportunityDto,
@@ -54,7 +55,7 @@ export class OpportunitiesController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard)
+  @UseGuards(InternalFeaturesGuard, AuthGuard)
   update(
     @Req() request: AuthRequest,
     @Param('id') id: string,
@@ -67,7 +68,7 @@ export class OpportunitiesController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard)
+  @UseGuards(InternalFeaturesGuard, AuthGuard)
   remove(@Req() request: AuthRequest, @Param('id') id: string) {
     if (request.user.role !== UserRole.PROVIDER) {
       throw new ForbiddenException();

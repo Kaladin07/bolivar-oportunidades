@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getOpportunity } from "@/features/opportunities/api/opportunities";
-import { ApplyButton } from "@/features/opportunities/components/apply-button";
 import { OpportunityDescription } from "@/features/opportunities/components/opportunity-description";
 import type { Opportunity } from "@/features/opportunities/model/opportunity";
 import { dictionary, isLocale, modalityLabel, typeLabel, type Locale } from "@/shared/i18n/i18n";
@@ -48,7 +47,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ lo
   if (!isLocale(locale)) notFound();
   const d = dictionary(locale);
   const item = await getOpportunity(slug);
-  if (!item) return <main className="container detail-page"><h1>{d.opportunityNotFound}</h1><Link href={`/${locale}/opportunities`}>{d.back}</Link></main>;
+  if (!item?.sourceUrl) notFound();
 
   const dateLocale = locale === "es" ? "es-CO" : "en-US";
   const salary = salaryText(item, locale);
@@ -64,7 +63,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ lo
       <header className="detail-hero">
         <div className="detail-hero-content">
           <span className="detail-kicker">{d.detailEyebrow}</span>
-          <div className="detail-pills"><span className={`type-pill type-${item.type.toLowerCase()}`}>{typeLabel(item.type, locale)}</span><span className="soft-pill">{modalityLabel(item.modality, locale)}</span><span className="detail-origin">{item.sourceUrl ? d.detailExternal : d.detailLocal}</span></div>
+          <div className="detail-pills"><span className={`type-pill type-${item.type.toLowerCase()}`}>{typeLabel(item.type, locale)}</span><span className="soft-pill">{modalityLabel(item.modality, locale)}</span><span className="detail-origin">{d.detailExternal}</span></div>
           <h1>{item.title}</h1>
           {item.summary && <p className="detail-hero-summary">{item.summary.replace(/:([A-Za-zÀ-ÿ])/g, ": $1")}</p>}
           <div className="detail-hero-meta"><span><small>{d.by}</small><strong>{organization}</strong></span><span className="detail-location">{item.locationPhysical || d.remote}</span></div>
@@ -82,17 +81,16 @@ export default async function OpportunityPage({ params }: { params: Promise<{ lo
           <dl>
             <div><dt>{d.type}</dt><dd>{typeLabel(item.type, locale)}</dd></div>
             <div><dt>{d.modality}</dt><dd>{modalityLabel(item.modality, locale)}</dd></div>
-            {item.sourceUrl && <div><dt>{d.eligibleLocationsLabel}</dt><dd>{eligibleText}</dd></div>}
+            <div><dt>{d.eligibleLocationsLabel}</dt><dd>{eligibleText}</dd></div>
             {item.employmentType && <div><dt>{d.employmentTypeLabel}</dt><dd>{sourceDetailLabel(item.employmentType, locale)}</dd></div>}
             {item.seniority && <div><dt>{d.seniorityLabel}</dt><dd>{sourceDetailLabel(item.seniority, locale)}</dd></div>}
             <div><dt>{d.published}</dt><dd>{new Date(item.publishedAt).toLocaleDateString(dateLocale, { timeZone: "America/Bogota" })}</dd></div>
             {item.closingDate && <div><dt>{d.closes}</dt><dd>{new Date(item.closingDate).toLocaleDateString(dateLocale, { timeZone: "America/Bogota" })}</dd></div>}
+            {item.lastSyncedAt && <div><dt>{d.lastChecked}</dt><dd>{new Date(item.lastSyncedAt).toLocaleDateString(dateLocale, { timeZone: "America/Bogota" })}</dd></div>}
             {item.sourceName && <div><dt>{d.source}</dt><dd>{item.sourceName}</dd></div>}
           </dl>
           <div className="detail-apply">
-            {item.sourceUrl
-              ? <><p>{d.externalNotice}</p><a className="button" href={item.sourceUrl} target="_blank" rel="noopener noreferrer">{d.applyAtSource} <span aria-hidden="true">↗</span></a></>
-              : <ApplyButton locale={locale} opportunityId={item.id} />}
+            <p>{d.externalNotice}</p><a className="button" href={item.sourceUrl} target="_blank" rel="noopener noreferrer">{d.applyAtSource} <span aria-hidden="true">↗</span></a>
           </div>
         </aside>
       </div>

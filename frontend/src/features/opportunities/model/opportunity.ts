@@ -11,6 +11,7 @@ export type Opportunity = {
   organizationName: string | null;
   sourceName: string | null;
   sourceUrl: string | null;
+  lastSyncedAt: string | null;
   summary: string | null;
   employmentType: string | null;
   seniority: string | null;

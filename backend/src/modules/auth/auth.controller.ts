@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
 import type { Response } from 'express';
+import { InternalFeaturesGuard } from '../../infrastructure/config/internal-features.guard.js';
 import { AuthService } from './auth.service.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RegisterDto } from './dto/register.dto.js';
@@ -19,6 +20,7 @@ import { AuthGuard } from './guards/auth.guard.js';
 import type { AuthRequest } from './types/auth-request.type.js';
 
 @Controller('auth')
+@UseGuards(InternalFeaturesGuard)
 export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
